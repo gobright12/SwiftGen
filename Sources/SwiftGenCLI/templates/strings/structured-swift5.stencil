@@ -59,6 +59,7 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 {% set enumName %}{{param.enumName|default:"L10n"}}{% endset %}
 {{accessModifier}} enum {{enumName}} {
+  {{accessModifier}} var locale: Locale = Locale.current
   {% if tables.count > 1 or param.forceFileNameEnum %}
   {% for table in tables %}
   {{accessModifier}} enum {{table.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
@@ -81,7 +82,7 @@ extension {{enumName}} {
     {% else %}
     let format = {{param.bundle|default:"BundleToken.bundle"}}.localizedString(forKey: key, value: value, table: table)
     {% endif %}
-    return String(format: format, locale: Locale.current, arguments: args)
+    return String(format: format, locale: self.locale, arguments: args)
   }
 }
 {% if not param.bundle and not param.lookupFunction %}
